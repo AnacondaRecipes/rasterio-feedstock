@@ -5,11 +5,11 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/r/rasterio/rasterio-{{ version }}.tar.gz
-  sha256: 467d9cf8297a6912b33dde49fa519346ba766972344fbafb22f3dfc54225f08a
+  git_url: https://github.com/mapbox/rasterio.git
+  git_tag: {{ version }}
 
 build:
-  number: 1
+  number: 2
   entry_points:
     - rio = rasterio.rio.main:main_group
 
@@ -44,8 +44,6 @@ test:
     - rio --help
     - rio info $RECIPE_DIR/test_data/test.tif  # [not win]
     - rio info %RECIPE_DIR%\test_data\test.tif  # [win]
-    - conda inspect linkages -p $PREFIX rasterio  # [not win]
-    - conda inspect objects -p $PREFIX rasterio  # [osx]
 
 about:
   home: https://github.com/mapbox/rasterio
