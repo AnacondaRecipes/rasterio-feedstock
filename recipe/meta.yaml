@@ -10,6 +10,8 @@ source:
 
 build:
   number: 0
+  ignore_run_exports:
+    - proj
   entry_points:
     - rio = rasterio.rio.main:main_group
   skip: True  # [win and py<=36]
