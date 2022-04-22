@@ -37,7 +37,6 @@ requirements:
     - click-plugins
     - cligj >=0.5
     - libgdal
-    - proj
     - setuptools
     - snuggs >=1.4.1
     - {{ pin_compatible('numpy') }}
