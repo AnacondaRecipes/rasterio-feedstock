@@ -75,7 +75,8 @@ about:
   license_family: BSD
   license_file: LICENSE.txt
   summary: 'Rasterio reads and writes geospatial raster datasets'
-  dev_url: https://github.com/mapbox/rasteri
+  dev_url: https://github.com/mapbox/rasterio
+  doc_url: https://rasterio.readthedocs.io/en/latest/
 
 extra:
   recipe-maintainers:
