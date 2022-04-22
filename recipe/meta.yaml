@@ -10,8 +10,7 @@ source:
 
 build:
   number: 0
-  skip: True  # [win and py27]
-  skip: True  # [ppc64le]
+  skip: True  # [py<36]
   entry_points:
     - rio = rasterio.rio.main:main_group
 
@@ -25,18 +24,23 @@ requirements:
     - cython
     - numpy
     - libgdal
+    - proj
+    - setuptools
+    - wheel
   run:
     - python
-    - setuptools >=0.9.8
-    - libgdal
+
     - affine
     - attrs
-    - click >=4,<8
-    - cligj >=0.5
-    - {{ pin_compatible('numpy') }}
-    - snuggs >=1.4.1
+    - certifi
+    - click >=4.0
     - click-plugins
-    - enum34  # [py<34]
+    - cligj >=0.5
+    - libgdal
+    - proj
+    - setuptools
+    - snuggs >=1.4.1
+    - {{ pin_compatible('numpy') }}
 
 test:
   source_files:
@@ -44,32 +48,36 @@ test:
   imports:
     - rasterio
   requires:
+    - pip
     - pytest >=2.8.2
     - pytest-cov >=2.2.0
     - ipython>=2.0
     - boto3 >=1.2.4
-    # TclError: no display name and no $DISPLAY environment variable
-    - matplotlib  # [not (win or py27)]
+    - matplotlib-base
     - packaging
     - hypothesis
-    - mock  # [py2k]
-    - futures  # [py2k]
+    - shapely
   files:
     - test_data/test.tif
   commands:
+    - pip check
     - rio --help
     - rio info {{ RECIPE_DIR }}/test_data/test.tif  # [not win]
     - rio info {{ RECIPE_DIR }}\\test_data\\test.tif  # [win]
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not test_mp_no_main_env" tests  # [linux]
-    # no idea why those two geom test do not pass on macOS
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_transform_geom_polygon_cutting or test_transform_geom_polygon_offset)" tests  # [osx]
-    # Skipping some tests in Windows due to, most of them looks like file lock issues.
-    - python -m pytest -v -m "not wheel" -rxXs -k "not (test_hit_ovr or test_float32_to_int16 or test_file_in_handler_with_vfs or test_wrap_file or test_hit_ovr)" tests  # [win]
+    # test_target_aligned_pixels is failing for all OSes for proj 8.0.0
+    # skip linux tests for cross-compiled targets
+    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
+    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_outer_boundless_pixel_fidelity or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
+    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_reproject_error_propagation or test_outer_boundless_pixel_fidelity)" tests  # [osx]
+    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_hit_ovr or test_file_in_handler_with_vfs or test_files or test_parse_windows_path or test_copyfiles_same_dataset_another_name or test_context or test_target_aligned_pixels or test_decimated_no_use_overview or test_reproject_error_propagation)" tests  # [win]
+
 about:
   home: https://github.com/mapbox/rasterio
   license: BSD-3-Clause
+  license_family: BSD
   license_file: LICENSE.txt
   summary: 'Rasterio reads and writes geospatial raster datasets'
+  dev_url: https://github.com/mapbox/rasteri
 
 extra:
   recipe-maintainers:
