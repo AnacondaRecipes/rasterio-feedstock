@@ -9,7 +9,7 @@ source:
   sha256: f9df8548e8a053d5db6057a4fd28d940d98a06d249f8af9e8fde1d8e9587d0b5
 
 build:
-  number: 0
+  number: 1
   skip: True  # [py<36 or s390x]
   entry_points:
     - rio = rasterio.rio.main:main_group
@@ -41,8 +41,6 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 test:
-  source_files:
-    - tests
   imports:
     - rasterio
   requires:
@@ -62,12 +60,13 @@ test:
     - rio --help
     - rio info {{ RECIPE_DIR }}/test_data/test.tif  # [not win]
     - rio info {{ RECIPE_DIR }}\\test_data\\test.tif  # [win]
+    # 2022/4/25: Skip pytest because source files are large than 14Mb.
     # test_target_aligned_pixels is failing for all OSes for proj 8.0.0
     # skip linux tests for cross-compiled targets
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_outer_boundless_pixel_fidelity or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_reproject_error_propagation or test_outer_boundless_pixel_fidelity)" tests  # [osx]
-    - python -m pytest -v -m "not wheel" -rxXs -k "not (test_hit_ovr or test_file_in_handler_with_vfs or test_files or test_parse_windows_path or test_copyfiles_same_dataset_another_name or test_context or test_target_aligned_pixels or test_decimated_no_use_overview or test_reproject_error_propagation)" tests  # [win]
+    #- $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
+    #- $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_outer_boundless_pixel_fidelity or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
+    #- $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_reproject_error_propagation or test_outer_boundless_pixel_fidelity)" tests  # [osx]
+    #- python -m pytest -v -m "not wheel" -rxXs -k "not (test_hit_ovr or test_file_in_handler_with_vfs or test_files or test_parse_windows_path or test_copyfiles_same_dataset_another_name or test_context or test_target_aligned_pixels or test_decimated_no_use_overview or test_reproject_error_propagation)" tests  # [win]
 
 about:
   home: https://github.com/mapbox/rasterio
