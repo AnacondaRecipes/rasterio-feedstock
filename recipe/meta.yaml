@@ -7,10 +7,11 @@ package:
 source:
   url: https://github.com/mapbox/rasterio/archive/{{ version }}.tar.gz
   sha256: 0da4bea271a7f2ef2c44f528245a4f5c76ec635d075a0bd834300c75924b62c5
-
+  patches:
+    - gh3091_gdal39.patch
 build:
   number: 0
-  skip: True  # [py<36 or s390x]
+  skip: True  # [py<38 or s390x]
   entry_points:
     - rio = rasterio.rio.main:main_group
 
