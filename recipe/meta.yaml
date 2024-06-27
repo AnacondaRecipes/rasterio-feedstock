@@ -7,11 +7,12 @@ package:
 source:
   url: https://github.com/mapbox/rasterio/archive/{{ version }}.tar.gz
   sha256: 0da4bea271a7f2ef2c44f528245a4f5c76ec635d075a0bd834300c75924b62c5
-  patches:
-    - gh3091_gdal39.patch
+  # patches:
+  #   - gh3091_gdal39.patch
 build:
   number: 0
   skip: True  # [py<38 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
   entry_points:
     - rio = rasterio.rio.main:main_group
 
@@ -77,6 +78,8 @@ about:
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.txt
+  description: |
+
   summary: 'Rasterio reads and writes geospatial raster datasets'
   dev_url: https://github.com/mapbox/rasterio
   doc_url: https://rasterio.readthedocs.io/en/latest/
