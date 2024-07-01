@@ -21,7 +21,7 @@ requirements:
   host:
     - python
     - pip
-    - cython
+    - cython ~=3.0.2
     - numpy
     - libgdal
     - setuptools
@@ -30,7 +30,6 @@ requirements:
     - python
     - affine
     - attrs
-    - boto3 >=1.3.1
     - certifi
     - click >=4.0
     - click-plugins
@@ -40,7 +39,6 @@ requirements:
     - snuggs >=1.4.1
     - importlib-metadata  # [py<310]
     - {{ pin_compatible('numpy') }}
-    - pyparsing
 
 test:
   source_files:
@@ -52,11 +50,12 @@ test:
     - pytest >=2.8.2
     - pytest-cov >=2.2.0
     - ipython>=2.0
-    - boto3 >=1.2.4
+    - boto3 >=1.3.1
     - matplotlib-base
     - packaging
     - hypothesis
     - shapely
+    - pyparsing ~=3.1
   files:
     - test_data/test.tif
   commands:
@@ -69,7 +68,7 @@ test:
     - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
     - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_outer_boundless_pixel_fidelity or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
     - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_reproject_error_propagation or test_outer_boundless_pixel_fidelity)" tests  # [osx]
-    # - python -m pytest -v -m "not wheel" -rxXs -k "not (test_decimated_no_use_overview or test_copyfiles_same_dataset_another_name)" tests  # [win]
+    - python -m pytest -v -m "not wheel" -rxXs -k "not (test_hit_ovr or test_file_in_handler_with_vfs or test_files or test_parse_windows_path or test_copyfiles_same_dataset_another_name or test_context or test_target_aligned_pixels or test_decimated_no_use_overview or test_reproject_error_propagation)" tests  # [win]
 
 about:
   home: https://github.com/mapbox/rasterio
