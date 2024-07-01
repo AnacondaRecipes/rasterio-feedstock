@@ -7,8 +7,7 @@ package:
 source:
   url: https://github.com/mapbox/rasterio/archive/{{ version }}.tar.gz
   sha256: 0da4bea271a7f2ef2c44f528245a4f5c76ec635d075a0bd834300c75924b62c5
-  # patches:
-  #   - gh3091_gdal39.patch
+
 build:
   number: 0
   skip: True  # [py<38 or s390x]
@@ -70,7 +69,7 @@ test:
     - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
     - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_outer_boundless_pixel_fidelity or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
     - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_reproject_error_propagation or test_outer_boundless_pixel_fidelity)" tests  # [osx]
-    - python -m pytest -v -m "not wheel" -rxXs -k "not (test_search_gdal_data_debian or test_decimated_no_use_overview or test_copyfiles_same_dataset_another_name)" tests  # [win]
+    # - python -m pytest -v -m "not wheel" -rxXs -k "not (test_decimated_no_use_overview or test_copyfiles_same_dataset_another_name)" tests  # [win]
 
 about:
   home: https://github.com/mapbox/rasterio
@@ -78,7 +77,7 @@ about:
   license_family: BSD
   license_file: LICENSE.txt
   description: |
-
+     Rasterio reads and writes these formats and provides a Python API based on N-D arrays.
   summary: 'Rasterio reads and writes geospatial raster datasets'
   dev_url: https://github.com/mapbox/rasterio
   doc_url: https://rasterio.readthedocs.io/en/latest/
