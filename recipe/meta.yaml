@@ -67,8 +67,6 @@ test:
     - hypothesis
     - shapely
     - aiohttp
-    # - pytest-randomly
-    # - cython>=3.0
 
   files:
     - test_data/test.tif
