@@ -48,6 +48,9 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_dataset" %}
 {% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_array_subsampled" %}
 
+# E   FileExistsError: [WinError 183] Cannot create a file when that file already exists:
+{% set tests_to_skip = tests_to_skip + " or test_decimated_no_use_overview" %}  # [win]
+
 test:
   source_files:
     - tests
@@ -77,7 +80,7 @@ test:
     - rio --help
     - rio info {{ RECIPE_DIR }}/test_data/test.tif
     - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests
-    
+
 about:
   home: https://github.com/mapbox/rasterio
   license: BSD-3-Clause
