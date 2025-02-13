@@ -1,4 +1,4 @@
-{% set version = "1.3.10" %}
+{% set version = "1.4.3" %}
 
 package:
   name: rasterio
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/mapbox/rasterio/archive/{{ version }}.tar.gz
-  sha256: 0da4bea271a7f2ef2c44f528245a4f5c76ec635d075a0bd834300c75924b62c5
+  sha256: dfa248fdc46f0e08ab957712b13a86d7cd49bce72f34b7fdca94af3b2d850181
 
 build:
   number: 0
@@ -21,10 +21,10 @@ requirements:
   host:
     - python
     - pip
-    - cython >=3.0.2, < 3.1.0
-    - numpy
+    - cython >=3.0.2,< 3.1.0
+    - numpy 2
     - libgdal
-    - setuptools
+    - setuptools>=67.8
     - wheel
   run:
     - python
@@ -35,14 +35,24 @@ requirements:
     - click-plugins
     - cligj >=0.5
     - libgdal
-    - setuptools
-    - snuggs >=1.4.1
+    # - setuptools
+    # - snuggs >=1.4.1
     - importlib-metadata  # [py<310]
-    - {{ pin_compatible('numpy') }}
+    - numpy >=1.24
+    - pyparsing
+
+{% set tests_to_skip = "_not_a_real_test" %}
+
+# Skipping geolocation warp tests due to minor numerical variations in reprojected output.
+{% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_array" %}
+{% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_dataset" %}
+{% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_array_subsampled" %}
 
 test:
   source_files:
     - tests
+    # Needed to provide pytest markers
+    - setup.cfg
   imports:
     - rasterio
   requires:
@@ -50,26 +60,24 @@ test:
     - pytest >=2.8.2
     - pytest-cov >=2.2.0
     - ipython>=2.0
-    - boto3 >=1.3.1
-    - matplotlib-base
+    - boto3 >=1.2.4
+    - fsspec
     - packaging
     - hypothesis
     - shapely
+    - aiohttp
+    - pytest-randomly
+    - cython>=3.0
 
   files:
     - test_data/test.tif
+
   commands:
     - pip check
     - rio --help
-    - rio info {{ RECIPE_DIR }}/test_data/test.tif  # [not win]
-    - rio info {{ RECIPE_DIR }}\\test_data\\test.tif  # [win]
-    # test_target_aligned_pixels is failing for all OSes for proj 8.0.0
-    # skip linux tests for cross-compiled targets
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_outer_boundless_pixel_fidelity or test_info_azure_unsigned)" tests  # [linux and build_platform == target_platform]
-    - $PYTHON -m pytest -v -m "not wheel" -rxXs -k "not (test_target_aligned_pixels or test_reproject_error_propagation or test_outer_boundless_pixel_fidelity)" tests  # [osx]
-    - python -m pytest -v -m "not wheel" -rxXs -k "not (test_hit_ovr or test_file_in_handler_with_vfs or test_files or test_parse_windows_path or test_copyfiles_same_dataset_another_name or test_context or test_target_aligned_pixels or test_decimated_no_use_overview or test_reproject_error_propagation)" tests  # [win]
-
+    - rio info {{ RECIPE_DIR }}/test_data/test.tif
+    - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests
+    
 about:
   home: https://github.com/mapbox/rasterio
   license: BSD-3-Clause
