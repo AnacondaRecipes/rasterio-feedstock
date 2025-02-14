@@ -66,6 +66,7 @@ test:
     - packaging
     - hypothesis
     - shapely
+    - aiohttp
 
   files:
     - test_data/test.tif
