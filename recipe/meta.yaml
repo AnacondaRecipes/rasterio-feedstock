@@ -32,7 +32,9 @@ requirements:
     - affine
     - attrs
     - certifi
-    - click >=4.0
+    # click 8.2.0 is not compatible with click-plugins required by version 1.4.3
+    # https://github.com/rasterio/rasterio/issues/3353
+    - click >=4.0,<8.2.0
     - click-plugins
     - cligj >=0.5
     - libgdal-core
