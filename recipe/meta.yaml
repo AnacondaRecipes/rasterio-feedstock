@@ -9,7 +9,7 @@ source:
   sha256: dfa248fdc46f0e08ab957712b13a86d7cd49bce72f34b7fdca94af3b2d850181
 
 build:
-  number: 0
+  number: 1
   skip: True  # [py<38 or s390x]
   entry_points:
     - rio = rasterio.rio.main:main_group
@@ -17,13 +17,14 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
   host:
     - python
     - pip
     - cython >=3.0.2,<3.1.0
     - numpy 2
-    - libgdal
+    - libgdal-core {{ libgdal }}
     - setuptools >=67.8
     - wheel
   run:
@@ -34,7 +35,7 @@ requirements:
     - click >=4.0
     - click-plugins
     - cligj >=0.5
-    - libgdal
+    - libgdal-core
     - importlib-metadata  # [py<310]
     - numpy >=1.24
     - pyparsing
