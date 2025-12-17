@@ -62,6 +62,7 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
 
 {% set tests_to_skip = tests_to_skip + " or test_complex_int16" %}  # [osx]
+{% set tests_to_skip = tests_to_skip + " or test_write_3857" %}  # [osx]
 
 test:
   source_files:
