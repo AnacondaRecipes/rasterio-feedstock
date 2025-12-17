@@ -30,6 +30,7 @@ requirements:
     - libgdal-core
     - setuptools >=67.8
     - wheel
+    - proj
   run:
     - python
     - affine
@@ -41,6 +42,7 @@ requirements:
     - libgdal-core
     - numpy >=1.24
     - pyparsing
+    - proj
 
 {% set tests_to_skip = "_not_a_real_test" %}
 
