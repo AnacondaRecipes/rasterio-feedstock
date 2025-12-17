@@ -29,7 +29,7 @@ requirements:
     - numpy >=1.24
     - libgdal-core
     - setuptools >=67.8
-    - wheel
+    # - wheel
     - proj
   run:
     - python
@@ -63,14 +63,25 @@ requirements:
 # XFAIL tests/test_mask_creation.py::test_create_sidecar_mask - Internal mask are the default since 3.9.0.
 # XFAIL tests/test_warp.py::test_target_aligned_pixels - Projection extents have changed with PROJ 8
 # XFAIL tests/test_warp.py::test_resample_no_invert_proj[Resampling.bilinear] - Some resampling methods succeed but produce blank images. See https://github.com/rasterio/rasterio/issues/614
-{% set tests_to_skip = tests_to_skip + " or test_set_colorinterp_all" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_aws_unsigned_subenv" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_rasterize_shapes_out_dtype_mismatch" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_vsifile_copyfiles" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_multi_vsifile" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_create_sidecar_mask" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_target_aligned_pixels" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_resample_no_invert_proj" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_set_colorinterp_all" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_aws_unsigned_subenv" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_rasterize_shapes_out_dtype_mismatch" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_vsifile_copyfiles" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_multi_vsifile" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_create_sidecar_mask" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_target_aligned_pixels" %}  # [linux]
+# {% set tests_to_skip = tests_to_skip + " or test_resample_no_invert_proj" %}  # [linux]
+
+
+# test_s3_open_with_env 
+# test_s3_open_with_implicit_env 
+# test_s3_open_with_implicit_env_no_boto3 
+
+test_sharing_off 
+
+
+
+
 
 
 test:
@@ -108,15 +119,18 @@ test:
     - rasterio.windows
   requires:
     - pip
-    - pytest >=2.8.2
+    - pytest >=2.8.2,<8
     - pytest-cov >=2.2.0
-    - ipython>=2.0
+    - ipython >=2.0
+    - aiohttp
     - boto3 >=1.2.4
     - fsspec
-    - packaging
     - hypothesis
+    - libgdal-netcdf
+    - matplotlib-base
+    - packaging
+    - requests
     - shapely
-    - aiohttp
 
   files:
     - test_data/test.tif
