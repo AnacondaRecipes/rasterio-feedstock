@@ -103,7 +103,7 @@ test:
   commands:
     - pip check
     - rio --help
-    - rio info {{ RECIPE_DIR }}/test_data/test.tif
+    - rio info test_data/test.tif
     - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests
 
 about:
