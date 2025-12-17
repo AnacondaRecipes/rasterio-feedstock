@@ -77,7 +77,7 @@ requirements:
 # test_s3_open_with_implicit_env 
 # test_s3_open_with_implicit_env_no_boto3 
 
-test_sharing_off 
+# test_sharing_off 
 
 
 
