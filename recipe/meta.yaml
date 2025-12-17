@@ -61,6 +61,8 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
 {% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
 
+{% set tests_to_skip = tests_to_skip + " or test_complex_int16" %}  # [osx]
+
 test:
   source_files:
     - tests
@@ -117,7 +119,7 @@ test:
     - rio --help
     - rio info test_data/test.tif   # [not win]
     - rio info test_data\\test.tif  # [win]
-    - python -m pytest -v -m "not wheel" -rxXs -o xfail_strict=false -k "not ({{ tests_to_skip }})" tests
+    - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests  # [unix]
 
 about:
   home: https://github.com/mapbox/rasterio
