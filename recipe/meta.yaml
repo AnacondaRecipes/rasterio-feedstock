@@ -54,6 +54,25 @@ requirements:
 # E   FileExistsError: [WinError 183] Cannot create a file when that file already exists:
 {% set tests_to_skip = tests_to_skip + " or test_decimated_no_use_overview" %}  # [win]
 
+
+# XFAIL tests/test_colorinterp.py::test_set_colorinterp_all[ColorInterp.gray0] - Setting colorinterp to gray fails with GDAL 2.3, see https://github.com/rasterio/rasterio/issues/1234
+# XFAIL tests/test_env.py::test_aws_unsigned_subenv - Turning off signing in an inner env does not work in Rasterio 1.0
+# XFAIL tests/test_features.py::test_rasterize_shapes_out_dtype_mismatch - shape values are always unsafely cast to the given dtype.
+# XFAIL tests/test_filepath.py::test_vsifile_copyfiles - Copying is not supported by FilePath
+# XFAIL tests/test_filepath.py::test_multi_vsifile - FilePath does not implement '.files' property properly.
+# XFAIL tests/test_mask_creation.py::test_create_sidecar_mask - Internal mask are the default since 3.9.0.
+# XFAIL tests/test_warp.py::test_target_aligned_pixels - Projection extents have changed with PROJ 8
+# XFAIL tests/test_warp.py::test_resample_no_invert_proj[Resampling.bilinear] - Some resampling methods succeed but produce blank images. See https://github.com/rasterio/rasterio/issues/614
+{% set tests_to_skip = tests_to_skip + " or test_set_colorinterp_all" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_aws_unsigned_subenv" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_rasterize_shapes_out_dtype_mismatch" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_vsifile_copyfiles" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_multi_vsifile" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_create_sidecar_mask" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_target_aligned_pixels" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_resample_no_invert_proj" %}  # [linux]
+
+
 test:
   source_files:
     - tests
@@ -105,7 +124,8 @@ test:
   commands:
     - pip check
     - rio --help
-    - rio info test_data/test.tif
+    - rio info test_data/test.tif   # [not win]
+    - rio info test_data\\test.tif  # [win]
     - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests
 
 about:
