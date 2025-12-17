@@ -61,6 +61,23 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
 {% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
 
+# XFAIL tests/test_colorinterp.py::test_set_colorinterp_all[ColorInterp.gray0] - reason: Setting colorinterp to gray fails with GDAL 2.3, see https://github.com/rasterio/rasterio/issues/1234
+# XFAIL tests/test_env.py::test_aws_unsigned_subenv - Turning off signing in an inner env does not work in Rasterio 1.0
+# XFAIL tests/test_features.py::test_rasterize_shapes_out_dtype_mismatch - shape values are always unsafely cast to the given dtype.
+# XFAIL tests/test_filepath.py::test_vsifile_copyfiles - Copying is not supported by FilePath
+# XFAIL tests/test_filepath.py::test_multi_vsifile - FilePath does not implement '.files' property properly.
+# XFAIL tests/test_mask_creation.py::test_create_sidecar_mask - Internal mask are the default since 3.9.0.
+# XFAIL tests/test_warp.py::test_target_aligned_pixels - Projection extents have changed with PROJ 8
+# XFAIL tests/test_warp.py::test_resample_no_invert_proj[Resampling.bilinear] - reason: Some resampling methods succeed but produce blank images. See https://github.com/rasterio/rasterio/issues/614
+{% set tests_to_skip = tests_to_skip + " or test_set_colorinterp_all" %}                  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_aws_unsigned_subenv" %}                  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_rasterize_shapes_out_dtype_mismatch" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_vsifile_copyfiles" %}                    # [win]
+{% set tests_to_skip = tests_to_skip + " or test_multi_vsifile" %}                        # [win]
+{% set tests_to_skip = tests_to_skip + " or test_create_sidecar_mask" %}                  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_target_aligned_pixels" %}                # [win]
+{% set tests_to_skip = tests_to_skip + " or test_resample_no_invert_proj" %}              # [win]
+
 test:
   source_files:
     - tests
