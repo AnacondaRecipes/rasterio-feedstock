@@ -29,7 +29,6 @@ requirements:
     - numpy >=1.24
     - libgdal-core
     - setuptools >=67.8
-    # - wheel
     - proj
   run:
     - python
@@ -55,13 +54,12 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_decimated_no_use_overview" %}  # [win]
 
 #  <Result RasterioIOError('HTTP response code: 403')>.exit_code
-{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_env" %}                    # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env" %}           # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env_no_boto3" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_env_open_s3" %}                         # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}             # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}                         # [linux]
-
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_env" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env_no_boto3" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_open_s3" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
 
 test:
   source_files:
