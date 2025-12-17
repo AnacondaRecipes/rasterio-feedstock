@@ -20,12 +20,12 @@ requirements:
     - {{ stdlib("c") }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - cython
+    - cython >=3.1.0
     - numpy >=1.24
   host:
     - python
     - pip
-    - cython
+    - cython >=3.1.0
     - numpy >=1.24
     - libgdal-core
     - setuptools >=67.8
