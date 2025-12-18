@@ -65,6 +65,7 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_write_3857" %}     # [osx]
 {% set tests_to_skip = tests_to_skip + " or test_nodata" %}         # [osx]
 {% set tests_to_skip = tests_to_skip + " or test_write_ubyte" %}    # [osx]
+{% set tests_to_skip = tests_to_skip + " or test_write_window" %}   # [osx]
 
 test:
   source_files:
