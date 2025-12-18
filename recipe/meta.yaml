@@ -1,43 +1,46 @@
-{% set version = "1.4.3" %}
+{% set name = "rasterio" %}
+{% set version = "1.4.4" %}
 
 package:
-  name: rasterio
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://github.com/mapbox/rasterio/archive/{{ version }}.tar.gz
-  sha256: dfa248fdc46f0e08ab957712b13a86d7cd49bce72f34b7fdca94af3b2d850181
+  url: https://github.com/mapbox/{{ name }}/archive/{{ version }}.tar.gz
+  sha256: 056bc5ad56600f27fbebdaec76ec8c1ff66f2adf6b54d33fabb816d1a9e914d5
 
 build:
   number: 0
-  skip: True  # [py<38 or s390x]
+  skip: True  # [py<310]
   entry_points:
     - rio = rasterio.rio.main:main_group
 
 requirements:
   build:
+    - {{ stdlib("c") }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - numpy >=1.24
   host:
     - python
     - pip
-    - cython >=3.0.2,<3.1.0
-    - numpy 2
-    - libgdal
+    - cython >=3.1.0
+    - numpy >=1.24
+    - libgdal-core
     - setuptools >=67.8
-    - wheel
+    - proj
   run:
     - python
     - affine
     - attrs
     - certifi
-    - click >=4.0
+    - click >=4,!=8.2.* # https://github.com/pallets/click/issues/2939
     - click-plugins
     - cligj >=0.5
-    - libgdal
-    - importlib-metadata  # [py<310]
+    - libgdal-core
     - numpy >=1.24
     - pyparsing
+    - proj
 
 {% set tests_to_skip = "_not_a_real_test" %}
 
@@ -49,6 +52,14 @@ requirements:
 # E   FileExistsError: [WinError 183] Cannot create a file when that file already exists:
 {% set tests_to_skip = tests_to_skip + " or test_decimated_no_use_overview" %}  # [win]
 
+#  <Result RasterioIOError('HTTP response code: 403')>.exit_code
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_env" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env_no_boto3" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_open_s3" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
+
 test:
   source_files:
     - tests
@@ -56,17 +67,46 @@ test:
     - setup.cfg
   imports:
     - rasterio
+    - rasterio.abc
+    - rasterio.control
+    - rasterio.coords
+    - rasterio.crs
+    - rasterio.drivers
+    - rasterio.dtypes
+    - rasterio.enums
+    - rasterio.env
+    - rasterio.errors
+    - rasterio.features
+    - rasterio.fill
+    - rasterio.io
+    - rasterio.mask
+    - rasterio.merge
+    - rasterio.plot
+    - rasterio.profiles
+    - rasterio.rio
+    - rasterio.rpc
+    - rasterio.serde
+    - rasterio.session
+    - rasterio.shutil
+    - rasterio.stack
+    - rasterio.transform
+    - rasterio.vrt
+    - rasterio.warp
+    - rasterio.windows
   requires:
     - pip
-    - pytest >=2.8.2
+    - pytest >=2.8.2,<8
     - pytest-cov >=2.2.0
-    - ipython>=2.0
+    - ipython >=2.0
+    - aiohttp
     - boto3 >=1.2.4
     - fsspec
-    - packaging
     - hypothesis
+    - libgdal-netcdf
+    - matplotlib-base
+    - packaging
+    - requests
     - shapely
-    - aiohttp
 
   files:
     - test_data/test.tif
@@ -74,8 +114,9 @@ test:
   commands:
     - pip check
     - rio --help
-    - rio info {{ RECIPE_DIR }}/test_data/test.tif
-    - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests
+    - rio info test_data/test.tif   # [not win]
+    - rio info test_data\\test.tif  # [win]
+    - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests  # [unix]
 
 about:
   home: https://github.com/mapbox/rasterio
