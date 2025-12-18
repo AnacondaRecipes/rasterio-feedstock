@@ -20,7 +20,6 @@ requirements:
     - {{ stdlib("c") }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - cython >=3.1.0
     - numpy >=1.24
   host:
     - python
@@ -60,12 +59,6 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_env_open_s3" %}
 {% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
 {% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
-
-{% set tests_to_skip = tests_to_skip + " or test_complex_int16" %}  # [osx]
-{% set tests_to_skip = tests_to_skip + " or test_write_3857" %}     # [osx]
-{% set tests_to_skip = tests_to_skip + " or test_nodata" %}         # [osx]
-{% set tests_to_skip = tests_to_skip + " or test_write_ubyte" %}    # [osx]
-{% set tests_to_skip = tests_to_skip + " or test_write_window" %}   # [osx]
 
 test:
   source_files:
