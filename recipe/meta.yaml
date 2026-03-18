@@ -1,5 +1,5 @@
 {% set name = "rasterio" %}
-{% set version = "1.4.4" %}
+{% set version = "1.5.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,11 +7,11 @@ package:
 
 source:
   url: https://github.com/mapbox/{{ name }}/archive/{{ version }}.tar.gz
-  sha256: 056bc5ad56600f27fbebdaec76ec8c1ff66f2adf6b54d33fabb816d1a9e914d5
+  sha256: f5d5cab866545e85a21b1921458ee8c711e23489ccc44fa66c6f70443a3ecae6
 
 build:
   number: 0
-  skip: True  # [py<310]
+  skip: true  # [py<312]
   entry_points:
     - rio = rasterio.rio.main:main_group
 
@@ -20,37 +20,30 @@ requirements:
     - {{ stdlib("c") }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - numpy >=1.24
+    - numpy >=2
   host:
-    - python
     - pip
-    - cython >=3.1.0
-    - numpy >=1.24
-    - libgdal-core
-    - setuptools >=67.8
+    - python
+    - cython >=3.1,<=3.2
+    - numpy {{ numpy }}
+    - libgdal-core >=3.8
+    - setuptools >=77.0.3
     - proj
   run:
     - python
-    - affine
     - attrs
+    - affine
     - certifi
     - click >=4,!=8.2.* # https://github.com/pallets/click/issues/2939
-    - click-plugins
     - cligj >=0.5
-    - libgdal-core
-    - numpy >=1.24
+    - numpy
     - pyparsing
+    - libgdal-core >=3.8
     - proj
+  run_constrained:
+    - boto3 >=1.2.4
 
 {% set tests_to_skip = "_not_a_real_test" %}
-
-# Skipping geolocation warp tests due to minor numerical variations in reprojected output.
-{% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_array" %}
-{% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_dataset" %}
-{% set tests_to_skip = tests_to_skip + " or test_geoloc_warp_array_subsampled" %}
-
-# E   FileExistsError: [WinError 183] Cannot create a file when that file already exists:
-{% set tests_to_skip = tests_to_skip + " or test_decimated_no_use_overview" %}  # [win]
 
 #  <Result RasterioIOError('HTTP response code: 403')>.exit_code
 {% set tests_to_skip = tests_to_skip + " or test_s3_open_with_env" %}
@@ -60,11 +53,13 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
 {% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
 
+# rasterio._err.CPLE_HttpResponseError: CURL error: schannel: the revocation status is unknown
+{% set tests_to_skip = tests_to_skip + " or test_datasetreader_ctor_url" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_issue1982" %}  # [win]
+
 test:
   source_files:
     - tests
-    # Needed to provide pytest markers
-    - setup.cfg
   imports:
     - rasterio
     - rasterio.abc
@@ -85,7 +80,6 @@ test:
     - rasterio.profiles
     - rasterio.rio
     - rasterio.rpc
-    - rasterio.serde
     - rasterio.session
     - rasterio.shutil
     - rasterio.stack
@@ -116,7 +110,9 @@ test:
     - rio --help
     - rio info test_data/test.tif   # [not win]
     - rio info test_data\\test.tif  # [win]
-    - python -m pytest -v -m "not wheel" -rxXs -k "not ({{ tests_to_skip }})" tests  # [unix]
+    # The tests on windows hard fail no matter what
+    # Error in sys.excepthook
+    - python -m pytest -v -m "not wheel" -k "not ({{ tests_to_skip }})" -rxXs tests  # [unix]
 
 about:
   home: https://github.com/mapbox/rasterio
