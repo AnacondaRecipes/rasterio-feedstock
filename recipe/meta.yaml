@@ -10,7 +10,7 @@ source:
   sha256: f5d5cab866545e85a21b1921458ee8c711e23489ccc44fa66c6f70443a3ecae6
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<312]
   entry_points:
     - rio = rasterio.rio.main:main_group
@@ -32,7 +32,7 @@ requirements:
   run:
     - python
     - attrs
-    - affine
+    - affine <3  # Affine 3 switched from namedtuple to attrs, breaking rio info JSON serialization.
     - certifi
     - click >=4,!=8.2.* # https://github.com/pallets/click/issues/2939
     - cligj >=0.5
