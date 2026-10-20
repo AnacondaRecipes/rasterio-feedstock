@@ -44,6 +44,14 @@ requirements:
 
 {% set tests_to_skip = "_not_a_real_test" %}
 
+#  <Result RasterioIOError('HTTP response code: 403')>.exit_code
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_env" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env_no_boto3" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_open_s3" %}
+{% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
+{% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
+
 # rasterio._err.CPLE_HttpResponseError: CURL error: schannel: the revocation status is unknown
 {% set tests_to_skip = tests_to_skip + " or test_datasetreader_ctor_url" %}  # [win]
 {% set tests_to_skip = tests_to_skip + " or test_issue1982" %}  # [win]
