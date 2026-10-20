@@ -111,7 +111,8 @@ test:
     - rio info test_data/test.tif   # [not win]
     - rio info test_data\\test.tif  # [win]
     - export REQUESTS_CA_BUNDLE="${REQUESTS_CA_BUNDLE:-$PREFIX/ssl/cacert.pem}"  # [unix]
-    - python -m pytest -v -m "not wheel" -k "not ({{ tests_to_skip }})" -rxXs tests
+    # Windows: all tests pass, then the interpreter crashes on exit with an access violation (0xC0000005)
+    - python -m pytest -v -m "not wheel" -k "not ({{ tests_to_skip }})" -rxXs tests  # [unix]
 
 about:
   home: https://github.com/mapbox/rasterio
