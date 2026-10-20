@@ -1,5 +1,5 @@
 {% set name = "rasterio" %}
-{% set version = "1.5.0" %}
+{% set version = "1.5.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/mapbox/{{ name }}/archive/{{ version }}.tar.gz
-  sha256: f5d5cab866545e85a21b1921458ee8c711e23489ccc44fa66c6f70443a3ecae6
+  sha256: a3342f6a5102d8bb07d831b2390e217a2fd84afc49efbfe3e7cf36801de99c63
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py<312]
   entry_points:
     - rio = rasterio.rio.main:main_group
@@ -20,38 +20,29 @@ requirements:
     - {{ stdlib("c") }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - numpy >=2
   host:
     - pip
     - python
-    - cython >=3.1,<=3.2
+    - cython >=3.1,<=3.3
     - numpy {{ numpy }}
-    - libgdal-core >=3.8
+    - libgdal-core {{ libgdal_core }}
     - setuptools >=77.0.3
-    - proj
+    - proj {{ proj }}
   run:
     - python
     - attrs
-    - affine <3  # Affine 3 switched from namedtuple to attrs, breaking rio info JSON serialization.
+    - affine
     - certifi
     - click >=4,!=8.2.* # https://github.com/pallets/click/issues/2939
-    - cligj >=0.5
-    - numpy
-    - pyparsing
+    - numpy >=2
+    - pyparsing >=3.0
     - libgdal-core >=3.8
     - proj
   run_constrained:
     - boto3 >=1.2.4
+    - ipython >=2.0
 
 {% set tests_to_skip = "_not_a_real_test" %}
-
-#  <Result RasterioIOError('HTTP response code: 403')>.exit_code
-{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_env" %}
-{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env" %}
-{% set tests_to_skip = tests_to_skip + " or test_s3_open_with_implicit_env_no_boto3" %}
-{% set tests_to_skip = tests_to_skip + " or test_env_open_s3" %}
-{% set tests_to_skip = tests_to_skip + " or test_env_open_s3_credentials" %}
-{% set tests_to_skip = tests_to_skip + " or test_s3_rio_info" %}
 
 # rasterio._err.CPLE_HttpResponseError: CURL error: schannel: the revocation status is unknown
 {% set tests_to_skip = tests_to_skip + " or test_datasetreader_ctor_url" %}  # [win]
@@ -95,6 +86,7 @@ test:
     - aiohttp
     - boto3 >=1.2.4
     - fsspec
+    - s3fs
     - hypothesis
     - libgdal-netcdf
     - matplotlib-base
@@ -110,9 +102,8 @@ test:
     - rio --help
     - rio info test_data/test.tif   # [not win]
     - rio info test_data\\test.tif  # [win]
-    # The tests on windows hard fail no matter what
-    # Error in sys.excepthook
-    - python -m pytest -v -m "not wheel" -k "not ({{ tests_to_skip }})" -rxXs tests  # [unix]
+    - export REQUESTS_CA_BUNDLE="${REQUESTS_CA_BUNDLE:-$PREFIX/ssl/cacert.pem}"  # [unix]
+    - python -m pytest -v -m "not wheel" -k "not ({{ tests_to_skip }})" -rxXs tests
 
 about:
   home: https://github.com/mapbox/rasterio
